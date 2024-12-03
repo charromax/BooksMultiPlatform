@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="search">Search</string>
+    <string name="close_search">Close</string>
+    <string name="search_results">Search Results</string>
+    <string name="favorites">Favorites</string>
+    <string name="no_search_results">No search results</string>
+    <string name="no_fave_results">No favorite results</string>
+</resources>
