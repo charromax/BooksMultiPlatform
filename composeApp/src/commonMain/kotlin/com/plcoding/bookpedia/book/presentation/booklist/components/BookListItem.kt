@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cmp_bookpedia.composeapp.generated.resources.Res
 import cmp_bookpedia.composeapp.generated.resources.book_error_2
-import coil3.compose.AsyncImagePainter.State.Empty.painter
 import coil3.compose.rememberAsyncImagePainter
 import com.plcoding.bookpedia.book.domain.Book
 import com.plcoding.bookpedia.core.presentation.LightBlue

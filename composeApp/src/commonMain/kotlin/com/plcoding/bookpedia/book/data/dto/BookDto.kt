@@ -6,25 +6,29 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BookDto(
-    @SerialName("key") val key: String?,
-    @SerialName("title") val title: String?,
-    @SerialName("cover_i") val coverId: Int?,
-    @SerialName("author_name") val authorName: List<String>?,
-    @SerialName("language") val language: List<String>?,
-    @SerialName("first_publish_year") val firstPublishYear: Int?,
-    @SerialName("ratings_average") val ratingsAverage: Double?,
-    @SerialName("ratings_count") val ratingsCount: Int?,
-    @SerialName("number_of_pages_median") val numberOfPagesMedian: Int?,
-    @SerialName("edition_count") val editionCount: Int?
+    @SerialName("key") val key: String? = null,
+    @SerialName("title") val title: String? = null,
+    @SerialName("cover_edition_key") val coverKey: String? = null,
+    @SerialName("cover_i") val coverAlternativeKey: Int? = null,
+    @SerialName("author_name") val authorName: List<String>? = null,
+    @SerialName("author_key") val authorKey: List<String>? = null,
+    @SerialName("language") val languages: List<String>? = null,
+    @SerialName("first_publish_year") val firstPublishYear: Int? = null,
+    @SerialName("ratings_average") val ratingsAverage: Double? = null,
+    @SerialName("ratings_count") val ratingsCount: Int? = null,
+    @SerialName("number_of_pages_median") val numberOfPagesMedian: Int? = null,
+    @SerialName("edition_count") val editionCount: Int? = null
 ) {
     fun toBook(): Book {
         return Book(
             id = key?.removePrefix("/works/") ?: "",
             title = title.orEmpty(),
-            imageUrl = coverId?.let { "https://covers.openlibrary.org/b/id/$it-L.jpg" }.orEmpty(),
+            imageUrl = coverKey?.let { "https://covers.openlibrary.org/b/olid/$it-M.jpg" }
+                ?: coverAlternativeKey?.let { "https://covers.openlibrary.org/b/olid/$it-M.jpg" }
+                ?: "",
             authors = authorName.orEmpty(),
             description = null, // No field for description in JSON
-            languages = language.orEmpty(),
+            languages = languages.orEmpty(),
             firstPublishYear = firstPublishYear?.toString(),
             averageRating = ratingsAverage,
             ratingCount = ratingsCount,
