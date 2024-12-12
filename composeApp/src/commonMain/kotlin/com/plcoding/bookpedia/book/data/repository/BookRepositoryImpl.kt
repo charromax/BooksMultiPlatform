@@ -2,6 +2,7 @@ package com.plcoding.bookpedia.book.data.repository
 
 import androidx.sqlite.SQLiteException
 import com.plcoding.bookpedia.book.data.database.FavoriteBookDao
+import com.plcoding.bookpedia.book.data.network.CompletionsDataSource
 import com.plcoding.bookpedia.book.data.network.RemoteBookDataSource
 import com.plcoding.bookpedia.book.domain.Book
 import com.plcoding.bookpedia.book.domain.BookRepository
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.map
 
 class BookRepositoryImpl(
     private val remoteBookDataSource: RemoteBookDataSource,
+    private val openAIDataSource: CompletionsDataSource,
     private val favoriteBookDao: FavoriteBookDao
 ) : BookRepository {
     override suspend fun searchBooks(query: String): Result<List<Book>, DataError.Remote> {
@@ -25,6 +27,15 @@ class BookRepositoryImpl(
         return if (localResult != null) {
             Result.Success(localResult.description)
         } else remoteBookDataSource.getBookDetails(bookWorkId).map { it.description }
+    }
+
+    override suspend fun getBookReview(
+        bookTitle: String,
+        authorName: String
+    ): Result<String?, DataError> {
+        return openAIDataSource.getBookReview(bookTitle = bookTitle, authorName = authorName).map {
+            it.choices.first().message.content
+        }
     }
 
     override fun getFavoriteBooks(): Flow<List<Book>> {

@@ -25,7 +25,7 @@ class BookDetailViewModel(
     val state = _state
         .onStart {
             observeFavoriteStatus()
-            getBookDetails()
+//            getBookDetails()
         }
         .stateIn(
             scope = viewModelScope,
@@ -44,6 +44,7 @@ class BookDetailViewModel(
                         book = action.book
                     )
                 }
+                getBookReview(action.book.title, action.book.authors.first())
             }
 
             BookDetailActions.OnFavoriteClick -> viewModelScope.launch {
@@ -58,20 +59,41 @@ class BookDetailViewModel(
         }
     }
 
+    private fun getBookReview(title: String, author: String) = viewModelScope.launch {
+        bookRepository
+            .getBookReview(title, author)
+            .onSuccess { review ->
+                _state.update {
+                    it.copy(
+                        isLoading = false, book = it.book?.copy(description = review)
+                    )
+                }
+            }
+            .onError { error ->
+                _state.update {
+                    it.copy(
+                        isLoading = false, error = error.toString()
+                    )
+                }
+            }
+    }
+
     private fun getBookDetails() = viewModelScope.launch {
-        bookRepository.getBookDescription(bookId).onSuccess { description ->
-            _state.update {
-                it.copy(
-                    isLoading = false, book = it.book?.copy(description = description)
-                )
+        bookRepository.getBookDescription(bookId)
+            .onSuccess { description ->
+                _state.update {
+                    it.copy(
+                        isLoading = false, book = it.book?.copy(description = description)
+                    )
+                }
             }
-        }.onError {
-            _state.update {
-                it.copy(
-                    isLoading = false, error = it.error
-                )
+            .onError { error ->
+                _state.update {
+                    it.copy(
+                        isLoading = false, error = error.toString()
+                    )
+                }
             }
-        }
     }
 
     private fun observeFavoriteStatus() {

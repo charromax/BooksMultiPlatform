@@ -22,7 +22,7 @@ fun BookList(
     scrollState: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.widthIn(700.dp),
         state = scrollState,
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -30,7 +30,6 @@ fun BookList(
         items(items = books, key = { it.id }) { book ->
             BookListItem(
                 modifier = Modifier
-                    .widthIn(max = 700.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 book = book,
