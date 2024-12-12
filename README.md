@@ -1,6 +1,9 @@
-# Tech Stack for Bookpedia App
+# Tech Stack for Bookpedia App with AI support
 
 ## 📚 Third-Party Libraries
+
+### OpenAI rest API integration
+[OpenAI docs](https://platform.openai.com/docs/api-reference/introduction)
 
 ### Dependency Injection
 
