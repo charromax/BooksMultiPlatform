@@ -7,6 +7,7 @@ import com.plcoding.bookpedia.book.domain.BookRepository
 import com.plcoding.bookpedia.core.domain.onError
 import com.plcoding.bookpedia.core.domain.onSuccess
 import com.plcoding.bookpedia.core.presentation.toUiText
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,15 +27,20 @@ class BookListViewModel(
 
     private val _state = MutableStateFlow(BookListState())
     val state = _state
-        .onStart { if (cachedBooks.isEmpty()) observeSearchQuery() }
+        .onStart {
+            if (cachedBooks.isEmpty()) {
+                observeSearchQuery()
+            }
+            observeFavoriteBooks()
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), _state.value)
 
     private var cachedBooks: List<Book> = emptyList()
     private var searchJob: Job? = null
+    private var favoriteJob: Job? = null
 
     fun onAction(action: BookListAction) {
         when (action) {
-            is BookListAction.OnBookClick -> TODO()
             is BookListAction.OnSearchQueryChange -> {
                 _state.update {
                     it.copy(searchQuery = action.query)
@@ -46,9 +52,12 @@ class BookListViewModel(
                     it.copy(selectedTab = action.index)
                 }
             }
+
+            else -> Unit
         }
     }
 
+    @OptIn(FlowPreview::class)
     private fun observeSearchQuery() {
         state
             .map { it.searchQuery }
@@ -93,5 +102,19 @@ class BookListViewModel(
                     )
                 }
             }
+    }
+
+    private fun observeFavoriteBooks() {
+        favoriteJob?.cancel()
+        favoriteJob = bookRepository
+            .getFavoriteBooks()
+            .onEach { favs ->
+                _state.update {
+                    it.copy(
+                        favoriteBooks = favs
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
     }
 }

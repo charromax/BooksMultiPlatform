@@ -6,6 +6,7 @@ import com.plcoding.bookpedia.book.domain.Book
 import com.plcoding.bookpedia.book.presentation.booklist.BookListContent
 import com.plcoding.bookpedia.book.presentation.booklist.BookListState
 import com.plcoding.bookpedia.book.presentation.booklist.components.SearchBar
+import com.plcoding.bookpedia.core.presentation.PulseAnimation
 
 @Composable
 @Preview
@@ -42,4 +43,10 @@ fun BookListPreview() {
         ),
         onAction = {}
     )
+}
+
+@Composable
+@Preview
+fun PulseAnimationPreview() {
+    PulseAnimation()
 }

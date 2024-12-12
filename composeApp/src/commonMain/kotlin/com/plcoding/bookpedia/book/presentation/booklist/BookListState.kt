@@ -1,12 +1,11 @@
 package com.plcoding.bookpedia.book.presentation.booklist
-
 import com.plcoding.bookpedia.book.domain.Book
 import com.plcoding.bookpedia.core.presentation.UiText
 
 
 data class BookListState(
     val searchQuery: String = "Kotlin",
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val searchResults: List<Book> = emptyList(),
     val favoriteBooks: List<Book> = emptyList(),
     val error: UiText? = null,

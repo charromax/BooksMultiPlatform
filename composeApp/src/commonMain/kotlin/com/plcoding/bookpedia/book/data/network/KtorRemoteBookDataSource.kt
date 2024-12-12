@@ -1,5 +1,6 @@
 package com.plcoding.bookpedia.book.data.network
 
+import com.plcoding.bookpedia.book.data.dto.BookWorkDto
 import com.plcoding.bookpedia.book.data.dto.SearchResponseDto
 import com.plcoding.bookpedia.core.data.safeCall
 import com.plcoding.bookpedia.core.domain.DataError
@@ -18,19 +19,15 @@ private const val LIMIT = "limit"
 private const val LANGUAGE = "language"
 private const val FIELDS = "fields"
 private const val FIELDS_REQUEST =
-    "key,title,cover_edition_key,cover_i,author_name,author_key," +
-            "language,first_publish_year,ratings_average,ratings_count," +
-            "number_of_pages_median,edition_count"
+    "key,title,cover_edition_key,cover_i,author_name,author_key," + "language,first_publish_year,ratings_average,ratings_count," + "number_of_pages_median,edition_count"
 
 class KtorRemoteBookDataSource(
     private val httpClient: HttpClient
 ) : RemoteBookDataSource {
     override suspend fun searchBooks(
-        query: String,
-        limit: Int?,
-        language: String
+        query: String, limit: Int?, language: String
     ): Result<SearchResponseDto, DataError.Remote> = withContext(Dispatchers.IO) {
-        safeCall {
+        safeCall<SearchResponseDto> {
             httpClient.get(urlString = "$BASE_URL$SEARCH") {
                 parameter(QUERY, query)
                 parameter(LIMIT, limit)
@@ -39,4 +36,13 @@ class KtorRemoteBookDataSource(
             }
         }
     }
+
+    override suspend fun getBookDetails(bookWorkId: String): Result<BookWorkDto, DataError.Remote> =
+        withContext(Dispatchers.IO) {
+            safeCall<BookWorkDto> {
+                httpClient.get(
+                    urlString = "${BASE_URL}works/$bookWorkId.json"
+                )
+            }
+        }
 }
