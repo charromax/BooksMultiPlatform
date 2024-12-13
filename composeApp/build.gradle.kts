@@ -47,8 +47,6 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
             implementation(libs.ktor.client.okhttp)
-            // YChat SDK
-            implementation(libs.ychat)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
